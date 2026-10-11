@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How ScamSOS works</title>
+<style>
+:root{--bg:#f2f6f8;--card:#fff;--ink:#11202b;--mut:#5a6b78;--line:#d9e2e8;--teal:#0f6b6b;--tealbg:#e3f2f1;--red:#c8281e;--warn:#fff3e0;--warnl:#eec27a}
+@media (prefers-color-scheme:dark){:root{--bg:#0e171d;--card:#16232b;--ink:#eaf1f5;--mut:#9fb0bb;--line:#2a3b46;--teal:#4fc3bd;--tealbg:#14302f;--red:#e5483d;--warn:#2b2214;--warnl:#6b5223}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg)}
+header a{color:var(--teal);font-weight:600;text-decoration:none;margin-left:14px}
+main{max-width:720px;margin:0 auto;padding:16px 16px 130px}
+.hero{background:#0b3b3c;color:#f2faf9;border-radius:22px;padding:22px 20px;margin:4px 0 8px}
+h1{font:700 30px/1.15 "Iowan Old Style",Georgia,serif;margin:0 0 8px}
+h2{font-size:20px;margin:28px 0 8px}
+.hero p{color:#bfe0dd;margin:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin:10px 0}
+.card b.t{display:block;font-size:18px}
+.arrow{text-align:center;color:var(--teal);font-size:22px;line-height:1}
+.mut{color:var(--mut);font-size:14px}
+.note{background:var(--warn);border:1px solid var(--warnl);border-radius:12px;padding:12px 14px;margin:12px 0}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:15px}
+th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:var(--tealbg);color:var(--teal)}
+.wrap{overflow-x:auto}
+pre{white-space:pre-wrap;word-break:break-word;font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+code{background:var(--tealbg);color:var(--teal);padding:1px 6px;border-radius:6px;font-size:15px}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line)}
+.bar a{display:flex;justify-content:center;max-width:720px;margin:0 auto;background:var(--red);color:#fff;text-decoration:none;font-weight:800;font-size:19px;border-radius:14px;padding:15px}
+</style>
+</head>
+<body>
+<header><b>🛟 ScamSOS</b><span><a href="index.html">App</a><a href="account.html">Account</a></span></header>
+<main>
+<section class="hero"><h1>How ScamSOS works</h1><p>A guide for the first hour after an online scam: what to do, what to save, and who to send it to.</p></section>
+
+<h2>The three pieces</h2>
+<div class="card"><b class="t">1. The app (index.html)</b>Guides you through what to do for four kinds of scam, has a Call 1930 button, a calm-down screen, a voice assistant, and builds your report, bank letter and proof pack. It runs on your phone.</div>
+<div class="arrow">↓</div>
+<div class="card"><b class="t">2. Your account (account.html)</b>Optional. Register, log in and save a report so you have a record and can see its status. The police desk lives here too.</div>
+<div class="arrow">↓</div>
+<div class="card"><b class="t">3. The database (Supabase)</b>Stores accounts, saved reports and proof screenshots. Access rules decide who can see what.</div>
+
+<h2>What happens, step by step</h2>
+<div class="card">
+<p><b>1.</b> A person opens the app and taps what happened, or taps <b>Talk</b>.<br>
+<b>2.</b> They get a short "do this now" list and can call 1930 with one tap.<br>
+<b>3.</b> They answer a few questions and attach proof. The app writes a summary and a bank letter.<br>
+<b>4.</b> They use the report (see below). If they want a record, they tap <b>Save to my account</b>, log in, and the report is stored.<br>
+<b>5.</b> A police officer with an approved account sees saved reports on the police desk, updates the status and can leave a note the person can read.</p>
+</div>
+
+<h2>Who can see what</h2>
+<div class="wrap"><table>
+<tr><th>Who</th><th>Can see</th><th>Can change</th></tr>
+<tr><td>Anyone using the app without an account</td><td>Only their own screen. Nothing is sent anywhere, except what they say in Talk when the AI is on.</td><td>Nothing stored</td></tr>
+<tr><td>Victim account</td><td>Their own reports and proof</td><td>Add new reports</td></tr>
+<tr><td>Police account</td><td>All saved reports, reporter name and phone, proof</td><td>Status and note only</td></tr>
+<tr><td>You (the owner)</td><td>Everything, in the Supabase dashboard</td><td>Everything, including who is police</td></tr>
+</table></div>
+
+<h2>Where you can see the database</h2>
+<div class="card">Log in at <b>supabase.com</b> and open your project:<br>
+<code>Table Editor → reports</code> for every saved report<br>
+<code>Table Editor → profiles</code> for names, phones and roles<br>
+<code>Authentication → Users</code> for registered emails<br>
+<code>Storage → evidence</code> for proof screenshots<br>
+<code>SQL Editor</code> to run queries or make someone police.</div>
+
+<h2>Where the report is used</h2>
+<div class="wrap"><table>
+<tr><th>Piece</th><th>Where it goes</th></tr>
+<tr><td>Summary</td><td>Read out on the <b>1930</b> call, or copy into the complaint on <b>cybercrime.gov.in</b>. Check the portal's current fields when you file.</td></tr>
+<tr><td>Bank letter</td><td>The branch manager or the bank's grievance / nodal officer, by email, in person or in the bank's app. Ask for a complaint number.</td></tr>
+<tr><td>Proof screenshots</td><td>Attach to the portal complaint and keep with the bank letter. The PDF includes them.</td></tr>
+<tr><td>Saved copy</td><td>Your account record. Useful if the bank does not reply and you escalate (for example to the RBI Ombudsman) or visit a police station.</td></tr>
+</table></div>
+
+<h2>Official places to report (real links)</h2>
+<div class="wrap"><table>
+<tr><th>Where</th><th>Use it for</th></tr>
+<tr><td><b>1930</b> helpline<br><a href="tel:1930">Call 1930</a></td><td>Money lost to online fraud. Available 24 hours. Call first.</td></tr>
+<tr><td><a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a></td><td>The national portal to file the full complaint, attach evidence and track it with your acknowledgement number.</td></tr>
+<tr><td>Your bank's official app or the number on your card</td><td>Block cards/UPI and raise a written dispute. Ask for a complaint number.</td></tr>
+<tr><td><a href="https://sancharsaathi.gov.in" target="_blank" rel="noopener">sancharsaathi.gov.in</a> (Chakshu)</td><td>Suspicious calls, SMS or WhatsApp, within 30 days. It does <b>not</b> handle money lost; use 1930 for that.</td></tr>
+<tr><td><a href="https://cms.rbi.org.in" target="_blank" rel="noopener">cms.rbi.org.in</a> (RBI Ombudsman)</td><td>Only after your bank has had 30 days to respond and has not fixed it. Free. Helpline 14448. Under the scheme effective 1 July 2026 you then have 90 days to file, so confirm the current rules on the site.</td></tr>
+</table></div>
+<p class="mut">Always type these addresses yourself or use the links here. Do not trust numbers or links from search ads or from the scammer.</p>
+
+<h2>Example report (fictional)</h2>
+<p class="mut">Made-up details, only to show the layout.</p>
+<pre>CYBER FRAUD REPORT (SUMMARY)
+Name: Asha Verma
+Mobile: 98XXXXXX10
+Type of incident: Money was sent or taken
+Date and time: 2026-10-02 14:31
+Amount lost: Rs 8000
+Bank: Example Bank (account/card ending 4321)
+Transaction ID / UTR: 123456789012
+Scammer details: UPI ID fakeoffer@example, phone 9XXXXXXXXX
+Existing complaint no.: __________
+
+What happened:
+A caller said they were from my bank and asked me to
+"verify" my account. I approved a UPI request and Rs 8000
+left my account.
+
+Timeline:
+2:10 pm - got a call from "bank"
+2:25 pm - approved UPI request
+2:31 pm - Rs 8000 debited
+
+Proof attached: Payment screenshot, Bank SMS or debit alert</pre>
+<pre>To,
+The Branch Manager / Nodal Officer
+Example Bank
+
+Subject: Fraudulent transaction of Rs 8000 - request to block,
+hold and investigate
+
+Dear Sir/Madam,
+
+I, Asha Verma (mobile 98XXXXXX10), hold an account/card ending
+4321 with your bank. On 2026-10-02 14:31 I became a victim of
+cyber fraud: a caller posing as the bank made me approve a UPI
+request.
+
+A transaction of Rs 8000 (Transaction ID/UTR: 123456789012) was
+made to: fakeoffer@example. I did not knowingly authorise a
+genuine payment.
+
+I have reported this to the National Cyber Crime Helpline 1930
+(complaint no.: __________). I request you to:
+1. Block my card, UPI and net banking if further loss is possible.
+2. Place a hold or lien on the amount, and contact the receiving bank.
+3. Register my dispute and give me a reference number.
+4. Share the status of the investigation in writing.
+
+I am reporting promptly and request that my liability be treated
+in line with RBI's framework on customer liability for
+unauthorised electronic banking transactions.
+
+Yours faithfully,
+Asha Verma
+98XXXXXX10</pre>
+<p class="mut">The official complaint forms are on cybercrime.gov.in and your bank's own channels. This page does not replace them.</p>
+
+<h2>Good to know</h2>
+<div class="note">
+<b>This is an independent guide, not a government service.</b> Saving a report here does not file a complaint. Always call <b>1930</b> and report on cybercrime.gov.in.<br><br>
+The AI voice conversation only runs inside Claude. On this website the voice assistant uses the simpler step-by-step flow.<br><br>
+On a shared phone, log out and clear the browser data after you finish.
+</div>
+</main>
+<div class="bar"><a href="tel:1930">Call 1930 now</a></div>
+</body>
+</html>

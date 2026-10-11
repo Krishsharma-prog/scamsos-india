@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ScamSOS Account</title>
+<style>
+:root{--bg:#f2f6f8;--card:#fff;--ink:#11202b;--mut:#5a6b78;--line:#d9e2e8;--teal:#0f6b6b;--tealbg:#e3f2f1;--red:#c8281e;--warn:#fff3e0;--warnl:#eec27a}
+@media (prefers-color-scheme:dark){:root{--bg:#0e171d;--card:#16232b;--ink:#eaf1f5;--mut:#9fb0bb;--line:#2a3b46;--teal:#4fc3bd;--tealbg:#14302f;--red:#e5483d;--warn:#2b2214;--warnl:#6b5223}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
+header a,header button{color:var(--teal);background:none;border:0;font:inherit;font-weight:600;cursor:pointer;text-decoration:none;margin-left:12px}
+main{max-width:720px;margin:0 auto;padding:16px 16px 130px}
+.hero{background:#0b3b3c;color:#f2faf9;border-radius:22px;padding:22px 20px;margin:4px 0 8px}.hero h1{margin:0 0 8px}.hero p{color:#bfe0dd;margin:0}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line)}
+.bar a{display:flex;justify-content:center;max-width:720px;margin:0 auto;background:var(--red);color:#fff;text-decoration:none;font-weight:800;font-size:19px;border-radius:14px;padding:15px;margin-left:auto;margin-right:auto}
+h1{font:700 28px/1.2 "Iowan Old Style",Georgia,serif;margin:8px 0}
+h2{font-size:19px;margin:22px 0 8px}
+.mut{color:var(--mut);font-size:14px}
+.note{background:var(--warn);border:1px solid var(--warnl);border-radius:12px;padding:12px 14px;margin:12px 0}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px}
+textarea{min-height:80px}
+.btn{border:0;border-radius:10px;padding:11px 16px;font:inherit;font-weight:700;background:var(--teal);color:#fff;cursor:pointer}
+.btn.sec{background:transparent;color:var(--teal);border:1px solid var(--teal)}
+.btn:disabled{opacity:.5}
+.tabs{display:flex;gap:8px;margin:8px 0}
+.tab{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.tab.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin:10px 0}
+summary{cursor:pointer}
+.badge{background:var(--tealbg);color:var(--teal);border-radius:99px;padding:2px 10px;font-size:13px;font-weight:600}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.row>input,.row>select{flex:1;min-width:140px;width:auto}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:12px 0}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.stats b{display:block;font-size:22px}.stats span{font-size:12px;color:var(--mut)}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.thumb{width:90px;height:90px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+#msg{min-height:22px;font-weight:600}#msg.err{color:var(--red)}#msg.ok{color:var(--teal)}
+pre{white-space:pre-wrap;word-break:break-word;margin:4px 0}
+</style>
+</head>
+<body>
+<header><b>🛟 ScamSOS</b><span><a href="index.html">App</a><a href="how-it-works.html">How it works</a><button id="out" hidden>Log out</button></span></header>
+<main><p id="msg" role="status"></p><div id="m"></div></main>
+<div class="bar"><a href="tel:1930">Call 1930 now</a></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+/* 1) Paste YOUR project values from Supabase -> Project Settings -> API.
+   The anon key is meant to be public; the database rules (schema.sql) protect the data.
+   NEVER paste the service_role key here. */
+const SB_URL=sb_publishable_afJLiZ3lHWWwuK0ce8dXvA_hdde-vk9,SB_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlaWZmb3p3enZpZmtoY2hiamlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE2OTM1NjYsImV4cCI6MjEwNzI2OTU2Nn0.KaQDATsal4dhs7icrYdjFOTXCN_JfZy6IoylRiHPsoM;
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const STATUS=['submitted','under review','forwarded to bank','closed'];
+const TYPES=['Money was sent or taken','My phone may be hacked','I shared an OTP, PIN or card details','I clicked a link or fake KYC / app','Other'];
+let db=null,me=null,prof=null,all=[];
+try{if(!SB_URL.startsWith('PASTE'))db=supabase.createClient(SB_URL,SB_KEY)}catch(e){}
+const M=$('#m'),msg=(t,bad)=>{$('#msg').textContent=t||'';$('#msg').className=bad?'err':'ok'};
+
+function authView(mode){
+M.innerHTML=`<section class="hero"><h1>${mode==='reg'?'Create your account':'Welcome back'}</h1><p>Save your report securely, follow its status, and keep your proof in one place.</p></section>
+<div class="tabs"><button class="tab ${mode==='login'?'on':''}" data-m="login">Log in</button><button class="tab ${mode==='reg'?'on':''}" data-m="reg">Register</button></div>
+<form id="af">${mode==='reg'?`<label>Full name</label><input id="fn" required autocomplete="name"><label>Mobile number</label><input id="ph" type="tel" required autocomplete="tel">`:''}
+<label>Email</label><input id="em" type="email" required autocomplete="email">
+<label>Password (at least 8 characters)</label><input id="pw" type="password" minlength="8" required autocomplete="${mode==='reg'?'new-password':'current-password'}">
+<p><button class="btn" type="submit">${mode==='reg'?'Create account':'Log in'}</button></p></form>
+<p class="mut">Registering creates a <b>victim</b> account. Police accounts are approved by the service admin and cannot be created here.</p>`;
+$('#af').onsubmit=async e=>{e.preventDefault();msg('Please wait…');
+const em=$('#em').value.trim(),pw=$('#pw').value;
+const r=mode==='reg'?await db.auth.signUp({email:em,password:pw,options:{data:{full_name:$('#fn').value.trim(),phone:$('#ph').value.trim()}}}):await db.auth.signInWithPassword({email:em,password:pw});
+if(r.error)return msg(r.error.message,1);
+if(!r.data.session)return msg('Account created. Check your email to confirm it, then log in.');
+msg('');start()}}
+
+async function start(){
+const {data:{session}}=await db.auth.getSession();
+if(!session){$('#out').hidden=true;return authView('login')}
+me=session.user;$('#out').hidden=false;
+const {data,error}=await db.from('profiles').select('*').eq('id',me.id).single();
+if(error||!data)return msg('Could not load your profile. '+(error?error.message:''),1);
+prof=data;prof.role==='police'?police():victim()}
+
+async function victim(){
+let d={};try{d=JSON.parse(localStorage.getItem('scamsos_draft')||'{}')}catch(e){}
+const f=k=>esc(d[k]||'');
+M.innerHTML=`<h1>Hello, ${esc(prof.full_name||'')}</h1>
+<div class="note">Saving a report here keeps a record in your account and lets the police desk review it. <b>It does not replace</b> calling <b>1930</b> or filing on cybercrime.gov.in.</div>
+<h2>New report</h2>
+<form id="rf"><label>What happened</label><select id="ty">${TYPES.map(t=>`<option${t===d.type?' selected':''}>${esc(t)}</option>`).join('')}</select>
+<label>When did it happen</label><input id="when" value="${f('when')}">
+<label>Amount lost (₹)</label><input id="amt" inputmode="numeric" value="${f('amt')}">
+<label>Your bank</label><input id="bank" value="${f('bank')}">
+<label>Scammer's phone, UPI ID, website or app</label><input id="scam" value="${f('scam')}">
+<label>Transaction ID / UTR</label><input id="utr" value="${f('utr')}">
+<label>Complaint number (if you have one)</label><input id="ack" value="${f('ack')}">
+<label>What happened, in your words</label><textarea id="what">${f('what')}</textarea>
+<label>Timeline</label><textarea id="tl">${f('timeline')}</textarea>
+<label>Proof screenshots (images, up to 8, 5 MB each)</label><input id="fl" type="file" accept="image/*" multiple>
+<p><button class="btn" id="sb" type="submit">Save report</button></p></form>
+<h2>My reports</h2><div id="ml"><p class="mut">Loading…</p></div>`;
+$('#rf').onsubmit=async e=>{e.preventDefault();$('#sb').disabled=true;msg('Saving…');
+const g=i=>$('#'+i).value.trim();
+const {data,error}=await db.from('reports').insert({user_id:me.id,scam_type:g('ty'),amount:g('amt')?Number(g('amt').replace(/[^\d.]/g,'')):null,incident_when:g('when'),bank:g('bank'),scammer_details:g('scam'),txn_id:g('utr'),ack_no:g('ack'),description:g('what'),timeline:g('tl')}).select().single();
+if(error){$('#sb').disabled=false;return msg(error.message,1)}
+let bad=0;for(const fl of [...$('#fl').files].slice(0,8)){
+if(!/^image\//.test(fl.type)||fl.size>5242880){bad++;continue}
+const u=await db.storage.from('evidence').upload(`${me.id}/${data.id}/${Date.now()}_${fl.name.replace(/[^\w.-]/g,'_')}`,fl,{contentType:fl.type});if(u.error)bad++}
+try{localStorage.removeItem('scamsos_draft')}catch(e){}
+msg(bad?`Report saved. ${bad} file(s) could not be uploaded (images up to 5 MB).`:'Report saved.');victim()};
+const r=await db.from('reports').select('*').order('created_at',{ascending:false});
+$('#ml').innerHTML=r.error?esc(r.error.message):(r.data.map(x=>`<div class="card"><b>${esc(x.scam_type||'Report')}</b> <span class="badge">${esc(x.status)}</span><br><small class="mut">${new Date(x.created_at).toLocaleString()} · Ref ${esc(x.id.slice(0,8))}${x.amount!=null?' · Rs '+esc(x.amount):''}</small>${x.police_note?`<p><b>Note from police desk:</b> ${esc(x.police_note)}</p>`:''}</div>`).join('')||'<p class="mut">No reports yet.</p>')}
+
+async function police(){
+M.innerHTML=`<h1>Police desk</h1><p class="mut">Demo dashboard. It shows only reports people saved in this service, not official complaints.</p>
+<div id="st" class="stats"></div>
+<div class="row"><input id="q" placeholder="Search name, phone, bank, UPI, text"><select id="fs"><option value="">All statuses</option>${STATUS.map(s=>`<option>${s}</option>`).join('')}</select><button class="btn sec" id="csv">Export CSV</button></div>
+<div id="pl"><p class="mut">Loading…</p></div>`;
+const r=await db.from('reports').select('*, profiles(full_name,phone)').order('created_at',{ascending:false});
+if(r.error)return msg(r.error.message,1);
+all=r.data;draw();$('#q').oninput=draw;$('#fs').onchange=draw;$('#csv').onclick=csv}
+
+function draw(){
+const q=$('#q').value.toLowerCase(),fs=$('#fs').value;
+const L=all.filter(r=>(!fs||r.status===fs)&&(!q||JSON.stringify(r).toLowerCase().includes(q)));
+$('#st').innerHTML=`<div><b>${all.length}</b><span>total</span></div>`+STATUS.map(s=>`<div><b>${all.filter(r=>r.status===s).length}</b><span>${s}</span></div>`).join('');
+$('#pl').innerHTML=L.map(r=>`<details class="card" data-id="${r.id}"><summary><b>${esc(r.scam_type||'Report')}</b> · ${r.amount!=null?'Rs '+esc(r.amount):'amount n/a'} · <span class="badge">${esc(r.status)}</span><br><small class="mut">${new Date(r.created_at).toLocaleString()} · ${esc(r.profiles?.full_name)} · ${esc(r.profiles?.phone)}</small></summary>
+<p class="mut">Ref: ${esc(r.id)}</p>
+<p><b>When:</b> ${esc(r.incident_when)}<br><b>Bank:</b> ${esc(r.bank)}<br><b>Scammer:</b> ${esc(r.scammer_details)}<br><b>Transaction ID:</b> ${esc(r.txn_id)}<br><b>Complaint no.:</b> ${esc(r.ack_no)}</p>
+<p><b>Description:</b></p><pre>${esc(r.description)}</pre><p><b>Timeline:</b></p><pre>${esc(r.timeline)}</pre>
+<label>Status</label><select data-s="${r.id}">${STATUS.map(s=>`<option${s===r.status?' selected':''}>${s}</option>`).join('')}</select>
+<label>Note for the reporter</label><textarea data-n="${r.id}">${esc(r.police_note)}</textarea>
+<div class="row"><button class="btn" data-save="${r.id}">Save</button><button class="btn sec" data-proof="${r.id}">Show proof</button></div><div class="thumbs" id="pf-${r.id}"></div></details>`).join('')||'<p class="mut">No reports match.</p>'}
+
+async function save(id){
+const st=document.querySelector(`[data-s="${id}"]`).value,nt=document.querySelector(`[data-n="${id}"]`).value.trim()||null;
+const r=await db.from('reports').update({status:st,police_note:nt}).eq('id',id);
+if(r.error)return msg(r.error.message,1);
+const x=all.find(y=>y.id===id);x.status=st;x.police_note=nt;msg('Saved.');draw();
+const el=document.querySelector(`[data-id="${id}"]`);if(el)el.open=true}
+
+async function proof(id){
+const r=all.find(x=>x.id===id),box=$('#pf-'+id),p=`${r.user_id}/${id}`;box.textContent='Loading…';
+const l=await db.storage.from('evidence').list(p);
+if(l.error||!l.data.length){box.textContent=l.error?l.error.message:'No files attached.';return}
+box.textContent='';
+for(const f of l.data){const u=await db.storage.from('evidence').createSignedUrl(`${p}/${f.name}`,300);if(!u.data)continue;
+const a=document.createElement('a'),i=document.createElement('img');a.href=u.data.signedUrl;a.target='_blank';a.rel='noopener';i.className='thumb';i.src=u.data.signedUrl;i.alt='proof';a.appendChild(i);box.appendChild(a)}}
+
+function csv(){
+const c=v=>{v=String(v??'');if(/^[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'};
+const H=['ref','date','status','type','amount','reporter','phone','when','bank','scammer','txn_id','complaint_no','description','police_note'];
+const rows=all.map(r=>[r.id,r.created_at,r.status,r.scam_type,r.amount,r.profiles?.full_name,r.profiles?.phone,r.incident_when,r.bank,r.scammer_details,r.txn_id,r.ack_no,r.description,r.police_note].map(c).join(','));
+const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([H.join(',')+'\n'+rows.join('\n')],{type:'text/csv'}));a.download='scamsos-reports.csv';a.click()}
+
+document.addEventListener('click',e=>{const b=e.target.closest('[data-m],[data-save],[data-proof]');if(!b)return;
+if(b.dataset.m)authView(b.dataset.m);else if(b.dataset.save)save(b.dataset.save);else if(b.dataset.proof)proof(b.dataset.proof)});
+$('#out').onclick=async()=>{await db.auth.signOut();msg('');me=prof=null;start()};
+
+if(!db)M.innerHTML=`<h1>One setup step left</h1><div class="note">Open <b>account.html</b> in a text editor and paste your Supabase <b>Project URL</b> and <b>anon key</b> at the top of the script. Steps are in the setup guide.</div>`;
+else start();
+</script>
+</body>
+</html>
